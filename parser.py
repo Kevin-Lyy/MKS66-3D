@@ -47,7 +47,7 @@ The file follows the following format:
 
 See the file script for an example of the file format
 """
-ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save' ]
+ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save','box','sphere','torus']
 
 def parse_file( fname, edges, transform, screen, color ):
 
@@ -65,20 +65,14 @@ def parse_file( fname, edges, transform, screen, color ):
             c+= 1
             args = lines[c].strip().split(' ')
 
-        if line == 'box':
-            add_box( points, x, y, z, width, height, depth )
-
-        elif line == 'sphere':
-            generate_sphere( points, cx, cy, cz, r, step )
-
-        elif line == 'torus':
-            add_sphere( points, cx, cy, cz, r, step )
+        if line == 'clear':
+            screen = new_screen()
+            edges = []
 
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
             add_circle(edges,
-                       float(args[0]), float(args[1]), float(args[2]),
-                       float(args[3]), step)
+                       float(args[0]), float(args[1]), float(args[2]), float(args[3]), step)
 
         elif line == 'hermite' or line == 'bezier':
             #print 'curve\t' + line + ": " + str(args)
@@ -89,9 +83,20 @@ def parse_file( fname, edges, transform, screen, color ):
                       float(args[6]), float(args[7]),
                       step, line)
 
+        elif line == 'box':
+            args = lines[c+1].strip().split(' ')
+            add_box(edges, float(args[0]),float(args[1]),float(args[2]),float(args[3]),float(args[4]),float(args[5]))
+
+        elif line == 'sphere':
+            args = lines[c+1].strip().split(' ')
+            add_sphere(edges, float(args[0]),float(args[1]),float(args[2]),float(args[3]), 40)
+
+        elif line == 'torus':
+            args = lines[c+1].strip().split(' ')
+            add_torus(edges, float(args[0]),float(args[1]),float(args[2]),float(args[3]),float(args[4]),40)
+
         elif line == 'line':
             #print 'LINE\t' + str(args)
-
             add_edge( edges,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
